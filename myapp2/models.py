@@ -8,8 +8,8 @@ class User(models.Model):
     mail = models.EmailField("Почта", max_length=100)
     phone_number = models.CharField("Номер телефона", max_length=100)
     registration_date = models.DateField("Дата регистрации")
-    map_id = models.ForeignKey('Map', on_delete=models.SET_NULL, null=True, blank=True)
-    booking_id = models.ForeignKey('Booking', on_delete=models.SET_NULL, null=True, blank=True)
+    map_id = models.ForeignKey('Map', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Карта')
+    booking_id = models.ForeignKey('Booking', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Бронирование')
     
     def __str__(self):
         return f"{self.surname} ({self.mail})"
@@ -51,11 +51,11 @@ class Tour(models.Model):
 
 
 class Booking(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
     booking_date = models.DateField("Дата бронирования")
-    tour_id = models.ForeignKey(Tour, on_delete=models.CASCADE)
-    Additional_services_id = models.ForeignKey(Additional_service, on_delete=models.SET_NULL, null=True, blank=True)
-    number_of_participants = models.IntegerField(default=0)
+    tour_id = models.ForeignKey(Tour, on_delete=models.CASCADE, verbose_name='Тур')
+    Additional_services_id = models.ForeignKey('Additional_service', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Дополнительные услуги')
+    number_of_participants = models.IntegerField(default=0, verbose_name='Количество участников')
     cost = models.DecimalField("Стоимость", max_digits=10, decimal_places=2)
     def __str__(self):
         return f"Бронирование №{self.id} для {self.user_id.surname} на тур '{self.tour_id.name}'"
@@ -64,11 +64,11 @@ class Booking(models.Model):
        
 
 class Feedback(models.Model):
-    tour_id = models.ForeignKey('Tour', on_delete=models.CASCADE)
+    tour_id = models.ForeignKey('Tour', on_delete=models.CASCADE, verbose_name='Тур')
     review_text = models.TextField("Текст отзыва")
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
     date_reference = models.DateField("Дата отзыва")
-    rating = models.IntegerField(default=0)
+    rating = models.IntegerField(default=0, verbose_name='Рейтинг')
     def __str__(self):
         return f" '{self.tour_id.name}' от {self.date_reference.strftime('%Y-%m-%d')}"
     class Meta:
@@ -78,11 +78,11 @@ class Feedback(models.Model):
 
 
 class Article(models.Model):  
-    name = models.CharField(max_length=100)
+    name = models.CharField("Название", max_length=100)
     author = models.CharField("Автор", max_length=100)
     Date_of_publicationи = models.DateField("Дата публикации")
     content = models.TextField("Содержание")
-    tour_id = models.ForeignKey(Tour, on_delete=models.CASCADE)
+    tour_id = models.ForeignKey(Tour, on_delete=models.CASCADE, verbose_name='Тур')
     category = models.CharField("Категория", max_length=50)
 
     class Meta:
@@ -119,8 +119,8 @@ class Event(models.Model):
         return f"{self.name} ({self.date_and_time.strftime('%Y-%m-%d %H:%M')})"
 
 class Map(models.Model):
-    tour_id = models.ForeignKey(Tour,on_delete=models.CASCADE)
-    event_id = models.ForeignKey(Event, on_delete=models.CASCADE)
+    tour_id = models.ForeignKey(Tour,on_delete=models.CASCADE, verbose_name='Тур')
+    event_id = models.ForeignKey(Event, on_delete=models.CASCADE, verbose_name='Событие')
     
     class Meta:
         verbose_name = "Карта" 
