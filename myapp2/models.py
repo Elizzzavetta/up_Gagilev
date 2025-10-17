@@ -79,10 +79,10 @@ class Feedback(models.Model):
 
 class Article(models.Model):  
     name = models.CharField("Название", max_length=100)
-    author = models.CharField("Автор", max_length=100)
+    author = models.ForeignKey("User", on_delete=models.CASCADE, verbose_name='Автор')
     Date_of_publicationи = models.DateField("Дата публикации")
     content = models.TextField("Содержание")
-    tour_id = models.ForeignKey(Tour, on_delete=models.CASCADE, verbose_name='Тур')
+    tour_id = models.ForeignKey(Tour, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Тур')
     category = models.CharField("Категория", max_length=50)
 
     class Meta:
@@ -93,17 +93,7 @@ class Article(models.Model):
         return f"{self.name} (Author: {self.author})"
     
 
-class Stock(models.Model):
-    name = models.CharField("Название", max_length=100)
-    start_date = models.DateField("Дата начала")
-    end_date = models.DateField("Дата окончания")
 
-    class Meta:
-        verbose_name = "Акция" 
-        verbose_name_plural = "Акции"
-
-    def __str__(self):
-        return f"{self.name} (с {self.start_date} по {self.end_date})"
 
 class Event(models.Model):
     name = models.CharField("Название", max_length=100)
